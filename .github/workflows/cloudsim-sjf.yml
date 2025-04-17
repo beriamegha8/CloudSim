@@ -1,0 +1,26 @@
+name: CloudSim SJF Scheduler CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+        cache: maven
+    
+    - name: Build with Maven
+      run: mvn clean install -DskipTests && mvn clean install -DskipTests
+      
+    - name: Run SJF Scheduler
+      run: mvn exec:java -pl modules/cloudsim-examples/ -Dexec.mainClass="org.cloudbus.cloudsim.examples.SJF_Scheduler"
